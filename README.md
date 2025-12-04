@@ -137,12 +137,15 @@ frontend (200ms)
 
 1. Open http://localhost:3000
 2. Login: `admin` / `admin`
-3. Explore pre-configured dashboards
+3. Explore pre-configured dashboards:
+   - **OpenTelemetry Collector Data Flow** - Monitor collector health and data pipeline
+   - Custom application dashboards (create your own!)
 4. See real-time:
    - Request rates
    - Error percentages
    - Latency percentiles (P50, P95, P99)
    - Service health
+   - Collector throughput and export ratios
 
 ### Analyze Logs (Kibana)
 
@@ -365,6 +368,7 @@ requestsPerMin: 30,  // Adjust traffic rate
 - [QUICKSTART.md](QUICKSTART.md) - Step-by-step guide
 - [EXAMPLES.md](EXAMPLES.md) - Code examples
 - [ARCHITECTURE.md](ARCHITECTURE.md) - System design
+- [COLLECTOR_DASHBOARD_GUIDE.md](COLLECTOR_DASHBOARD_GUIDE.md) - Collector monitoring guide
 
 ### External Resources
 - [OpenTelemetry Docs](https://opentelemetry.io/docs/)

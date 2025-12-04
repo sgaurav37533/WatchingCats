@@ -125,7 +125,9 @@ kill -9 $(lsof -t -i:8080)
 ### View Metrics
 1. Open http://localhost:3000
 2. Login: admin/admin
-3. Browse dashboards
+3. Browse dashboards:
+   - **OpenTelemetry Collector Data Flow** - Monitor collector pipeline
+   - Create custom application dashboards
 
 ### View Logs
 1. Open http://localhost:5601
@@ -182,6 +184,7 @@ make docker-up
 - `DEMO_ARCHITECTURE.md` - Architecture details
 - `QUICKSTART.md` - Step-by-step tutorial
 - `EXAMPLES.md` - Code examples
+- `COLLECTOR_DASHBOARD_GUIDE.md` - Collector monitoring
 - `WHATS_NEW.md` - Recent changes
 
 ## 💡 Pro Tips

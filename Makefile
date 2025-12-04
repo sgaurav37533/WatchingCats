@@ -120,3 +120,7 @@ deps:
 	$(GOMOD) download
 	$(GOMOD) tidy
 	@echo "✅ Dependencies downloaded"
+
+## verify-dashboard: Verify OpenTelemetry Collector Dashboard implementation
+verify-dashboard:
+	@./scripts/verify-dashboard.sh
