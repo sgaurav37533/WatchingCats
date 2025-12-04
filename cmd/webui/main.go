@@ -116,9 +116,15 @@ func (w *WebUI) handleDashboard(rw http.ResponseWriter, r *http.Request) {
 		KibanaURL:     "http://localhost:5601",
 	}
 
-	if err := templates.ExecuteTemplate(rw, "dashboard.html", data); err != nil {
-		w.logger.Error("Template error", zap.Error(err))
-		http.Error(rw, "Internal server error", http.StatusInternalServerError)
+	// Try the new index.html first, fall back to dashboard.html
+	templateName := "index.html"
+	if err := templates.ExecuteTemplate(rw, templateName, data); err != nil {
+		// Try dashboard.html as fallback
+		if err2 := templates.ExecuteTemplate(rw, "dashboard.html", data); err2 != nil {
+			w.logger.Error("Template error", zap.Error(err), zap.Error(err2))
+			http.Error(rw, "Internal server error", http.StatusInternalServerError)
+			return
+		}
 	}
 }
 

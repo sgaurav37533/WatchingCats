@@ -37,9 +37,9 @@ A fully functional e-commerce microservices application with complete observabil
 - **Docker & Docker Compose** (for full stack)
 - **8GB RAM** recommended for Docker
 
-### 🌐 **NEW: Web Dashboard (Recommended)**
+### 🌐 **NEW: Modern Web UI (Recommended)** ⭐️
 
-The easiest way to use the platform:
+A comprehensive observability platform inspired by the [OpenTelemetry Astronomy Shop Demo](https://github.com/open-telemetry/opentelemetry-demo)!
 
 ```bash
 # 1. Build all services
@@ -52,12 +52,20 @@ make run-webui
 open http://localhost:3001
 ```
 
-**The Web Dashboard provides:**
-- 📊 Real-time service health monitoring
-- 📈 Live metrics (request rate, errors, latency)
-- 📝 Recent logs with trace correlation
-- 🎛️ Load generator controls
-- 🔗 One-click access to Jaeger, Grafana, Prometheus, Kibana
+**The Modern Web UI provides:**
+- 🎨 **Beautiful Dashboard** - System overview with real-time metrics
+- 🖥️ **Services Monitor** - Health and performance of all microservices
+- 🔀 **Distributed Traces** - Interactive trace exploration with Jaeger integration
+- 📊 **Metrics Visualization** - Charts for CPU, memory, and network
+- 🛒 **Demo Shop** - Observatory-themed e-commerce for testing (6 products!)
+- 📈 **Real-time Charts** - Request volume, latency percentiles with Chart.js
+- 🗺️ **Service Topology** - Interactive dependency graph with D3.js
+- 🌓 **Theme Support** - Light and dark mode
+- 📱 **Responsive Design** - Works on desktop, tablet, and mobile
+- 🎛️ **Load Generator** - Automated traffic simulation
+- 🔗 **Direct Integration** - Quick access to Jaeger, Grafana, Prometheus, Kibana
+
+**See [MODERN_UI_GUIDE.md](MODERN_UI_GUIDE.md) for the complete guide!**
 
 ### Option 1: Run Locally (Fastest - No Docker)
 
@@ -364,11 +372,13 @@ requestsPerMin: 30,  // Adjust traffic rate
 ## 🎓 Learning Resources
 
 ### Included Documentation
+- [MODERN_UI_GUIDE.md](MODERN_UI_GUIDE.md) - ⭐️ Modern Web UI complete guide
+- [MODERN_UI_IMPLEMENTATION.md](MODERN_UI_IMPLEMENTATION.md) - UI implementation details
+- [COLLECTOR_DASHBOARD_GUIDE.md](COLLECTOR_DASHBOARD_GUIDE.md) - Collector monitoring guide
 - [DEMO_ARCHITECTURE.md](DEMO_ARCHITECTURE.md) - Detailed architecture
 - [QUICKSTART.md](QUICKSTART.md) - Step-by-step guide
 - [EXAMPLES.md](EXAMPLES.md) - Code examples
 - [ARCHITECTURE.md](ARCHITECTURE.md) - System design
-- [COLLECTOR_DASHBOARD_GUIDE.md](COLLECTOR_DASHBOARD_GUIDE.md) - Collector monitoring guide
 
 ### External Resources
 - [OpenTelemetry Docs](https://opentelemetry.io/docs/)

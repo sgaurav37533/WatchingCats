@@ -188,6 +188,8 @@ services:
         SERVICE_NAME: webui
     ports:
       - "3001:3001"
+    volumes:
+      - ./web:/root/web:ro
     environment:
       - OTEL_SERVICE_NAME=webui
     depends_on:
