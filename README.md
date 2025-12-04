@@ -1,34 +1,104 @@
-# OpenTelemetry Observability Platform
+# WatchingCat 🐱 Observability Platform
 
-A complete, production-ready microservices observability platform built with **Go** and **OpenTelemetry**, following the [official OpenTelemetry Demo architecture](https://opentelemetry.io/docs/demo/architecture/).
+<div align="center">
 
-## 🎯 What This Is
+**An OpenTelemetry-native observability platform inspired by [SigNoz](https://signoz.io)**
 
-A fully functional e-commerce microservices application with complete observability:
-- **5 Microservices** (Frontend, Cart, Product Catalog, Checkout, Load Generator)
-- **Distributed Tracing** across all services
-- **Structured Logging** with trace correlation
-- **Real-time Metrics** and alerting
-- **Exception Tracking** with stack traces
-- **Complete Visualization Stack** (Jaeger, Grafana, Kibana)
+*Self-hosted • Modern UI • Production-Ready • Easy to Deploy*
 
-## ✨ Features
+[![Go Version](https://img.shields.io/badge/Go-1.22+-00ADD8?logo=go)](https://golang.org)
+[![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-Native-blue)](https://opentelemetry.io)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker)](https://docs.docker.com/compose/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
 
-### 🔍 Observability
-- ✅ **Distributed Tracing** - Track requests across microservices
+</div>
+
+---
+
+## 🎯 What is WatchingCat?
+
+**WatchingCat** is a comprehensive, self-hosted observability platform that provides **unified collection, storage, and visualization** of traces, metrics, and logs—the three pillars of observability.
+
+Built on industry-standard components with an OpenTelemetry-first approach, WatchingCat offers:
+
+### Core Capabilities
+- 🔍 **Distributed Tracing** - Track requests across microservices with inline trace viewer
+- 📊 **Metrics Collection** - Real-time visualization of system and application metrics
+- 📝 **Log Management** - Centralized logging with trace correlation
+- 🚨 **Alert Management** - Rule-based alerting with multiple notification channels
+- 📈 **Service Topology** - Interactive dependency graphs and health monitoring
+- 🎨 **Modern Web UI** - Beautiful, responsive interface without framework complexity
+
+### Demo Applications
+Experience realistic telemetry with our **5-microservice e-commerce demo**:
+- Frontend, Cart, Product Catalog, Checkout, Load Generator
+- OpenTelemetry SDK instrumentation
+- Realistic traffic patterns and error injection
+
+## ✨ Why WatchingCat?
+
+### 🎯 Product Vision
+> **"Democratize observability by making OpenTelemetry accessible to all teams"**
+
+Inspired by SigNoz's architecture, WatchingCat provides:
+
+| Feature | Description | Status |
+|---------|-------------|--------|
+| **OpenTelemetry-Native** | Built on OTel from day one | ✅ Complete |
+| **Unified Backend** | Single API for all telemetry | 🔨 Phase 2 |
+| **Modern Web UI** | Beautiful interface without React | ✅ Complete |
+| **Self-Hosted** | Full control of your data | ✅ Complete |
+| **Easy Deployment** | Docker Compose in 5 minutes | ✅ Complete |
+| **Inline Trace Viewer** | No context switching to Jaeger | ✅ Complete |
+| **Real-time Metrics** | Live dashboards with Chart.js | ✅ Complete |
+| **Service Topology** | Interactive D3.js graphs | ✅ Complete |
+| **Alert Management** | Rule evaluation & notifications | 🔨 Phase 2 |
+| **ClickHouse Support** | High-performance storage | 📅 Phase 3 |
+
+### 🆚 Comparison with SigNoz
+
+**Similarities:**
+- ✅ OpenTelemetry-native architecture
+- ✅ Unified observability (traces, metrics, logs)
+- ✅ Self-hosted option
+- ✅ Modern web interface
+- ✅ Production-ready
+
+**Differences:**
+- **Storage**: Polyglot (Jaeger/Prometheus/ES) vs ClickHouse-only
+- **Frontend**: Vanilla JS vs React
+- **Focus**: Educational with demo apps vs Enterprise-first
+- **Deployment**: Easier initial setup vs Advanced scaling
+- **Target**: Small-medium teams vs Large-scale production
+
+**See [WATCHINGCAT_ARCHITECTURE.md](WATCHINGCAT_ARCHITECTURE.md) for detailed comparison**
+
+### ✨ Key Features
+
+#### 🔍 Observability
+- ✅ **Distributed Tracing** with inline viewer (OpenTelemetry-compliant)
+- ✅ **Metrics Collection** - CPU, memory, network, request rates
 - ✅ **Log Management** - Structured JSON logs with trace correlation
-- ✅ **Metrics Collection** - Request rates, latencies, error rates
-- ✅ **Alerting System** - Real-time threshold monitoring
+- ✅ **Alert System** - Threshold-based alerts (Phase 2)
 - ✅ **Exception Tracking** - Full stack traces with context
-- ✅ **Service Mesh Visualization** - See service dependencies
+- ✅ **Service Health** - Real-time health monitoring
 
-### 🏗️ Architecture
-- ✅ **Microservices** - 5 independent services
-- ✅ **OpenTelemetry SDK** - Industry-standard instrumentation
-- ✅ **OTLP Protocol** - Standard telemetry export
-- ✅ **Load Generator** - Realistic traffic simulation
+#### 🏗️ Architecture
+- ✅ **OpenTelemetry Collector** - Central telemetry pipeline
+- ✅ **Polyglot Storage** - Jaeger (traces), Prometheus (metrics), Elasticsearch (logs)
+- ✅ **Go Backend** - High-performance API server (Phase 2)
+- ✅ **Modern Frontend** - Vanilla JS with Chart.js & D3.js
 - ✅ **Docker Compose** - One-command deployment
 - ✅ **Production-Ready** - Best practices and patterns
+
+#### 🎨 User Interface
+- ✅ **Dashboard** - System overview with key metrics
+- ✅ **Services** - Health and performance monitoring
+- ✅ **Traces** - Inline trace viewer with span hierarchy
+- ✅ **Metrics** - Real-time charts and visualizations
+- ✅ **Demo Shop** - E-commerce simulation for testing
+- ✅ **Theme Support** - Light and dark modes
+- ✅ **Mobile-Ready** - Responsive design
 
 ## 🚀 Quick Start
 
@@ -369,20 +439,35 @@ requestsPerMin: 30,  // Adjust traffic rate
 - P50, P95, P99 latencies
 - Service availability
 
-## 🎓 Learning Resources
+## 📚 Documentation
 
-### Included Documentation
-- [MODERN_UI_GUIDE.md](MODERN_UI_GUIDE.md) - ⭐️ Modern Web UI complete guide
-- [MODERN_UI_IMPLEMENTATION.md](MODERN_UI_IMPLEMENTATION.md) - UI implementation details
-- [COLLECTOR_DASHBOARD_GUIDE.md](COLLECTOR_DASHBOARD_GUIDE.md) - Collector monitoring guide
-- [DEMO_ARCHITECTURE.md](DEMO_ARCHITECTURE.md) - Detailed architecture
-- [QUICKSTART.md](QUICKSTART.md) - Step-by-step guide
+### 🎯 Product Documentation
+- **[WATCHINGCAT_ARCHITECTURE.md](WATCHINGCAT_ARCHITECTURE.md)** - ⭐️ Complete architecture overview
+- **[PRODUCT_ROADMAP.md](PRODUCT_ROADMAP.md)** - 🗺️ Product vision and roadmap
+- **[BACKEND_IMPLEMENTATION_GUIDE.md](BACKEND_IMPLEMENTATION_GUIDE.md)** - 🔧 Building the unified backend
+- **[MODERN_UI_GUIDE.md](MODERN_UI_GUIDE.md)** - 🎨 Web UI complete guide
+- **[OTEL_PRINCIPLES_UPDATE.md](OTEL_PRINCIPLES_UPDATE.md)** - 📖 OpenTelemetry principles
+
+### 🏗️ Architecture & Design
+- [DEMO_ARCHITECTURE.md](DEMO_ARCHITECTURE.md) - Demo application architecture
+- [ARCHITECTURE.md](ARCHITECTURE.md) - System design details
+- [COLLECTOR_DASHBOARD_GUIDE.md](COLLECTOR_DASHBOARD_GUIDE.md) - Collector monitoring
+
+### 🚀 Getting Started
+- [QUICKSTART.md](QUICKSTART.md) - Step-by-step setup guide
+- [GETTING_STARTED.md](GETTING_STARTED.md) - Beginner's guide
 - [EXAMPLES.md](EXAMPLES.md) - Code examples
-- [ARCHITECTURE.md](ARCHITECTURE.md) - System design
+- [QUICK_REFERENCE.md](QUICK_REFERENCE.md) - Command reference
 
-### External Resources
+### 🔧 Implementation
+- [MODERN_UI_IMPLEMENTATION.md](MODERN_UI_IMPLEMENTATION.md) - UI implementation
+- [TRACE_VIEWER_FIXES.md](TRACE_VIEWER_FIXES.md) - Trace viewer details
+- [WEB_UI_GUIDE.md](WEB_UI_GUIDE.md) - Web UI technical guide
+
+### 🌐 External Resources
 - [OpenTelemetry Docs](https://opentelemetry.io/docs/)
 - [OpenTelemetry Demo](https://opentelemetry.io/docs/demo/)
+- [SigNoz Architecture](https://signoz.io/docs/architecture/)
 - [Jaeger Docs](https://www.jaegertracing.io/docs/)
 - [Grafana Docs](https://grafana.com/docs/)
 
@@ -440,31 +525,143 @@ docker push your-registry/frontend:latest
 
 See `k8s/` directory (coming soon) for Kubernetes manifests.
 
+## 🗺️ Product Roadmap
+
+### Phase 1: Foundation ✅ COMPLETE
+- ✅ OpenTelemetry Collector setup
+- ✅ Multi-backend storage (Jaeger, Prometheus, ES)
+- ✅ 5 demo microservices with instrumentation
+- ✅ Modern Web UI with inline trace viewer
+- ✅ Real-time metrics and service topology
+- ✅ Complete documentation
+
+### Phase 2: Production Ready 🔨 CURRENT
+- [ ] Unified Go backend service (SigNoz-style)
+- [ ] Real data integration (no mocks)
+- [ ] Alert Management UI
+- [ ] Enhanced trace viewer with real Jaeger data
+- [ ] Logs integration in UI
+- [ ] WebSocket for real-time updates
+- [ ] JWT authentication
+
+**Timeline**: 2-3 weeks | [Full Roadmap →](PRODUCT_ROADMAP.md)
+
+### Phase 3: Advanced Features 📅 Q1 2026
+- [ ] ClickHouse migration (optional)
+- [ ] Service Level Objectives (SLOs)
+- [ ] Anomaly detection (ML-based)
+- [ ] Advanced service dependency mapping
+- [ ] Incident management
+
+### Phase 4: Enterprise & Cloud 📅 Q2 2026
+- [ ] Multi-tenancy support
+- [ ] WatchingCat Cloud (SaaS)
+- [ ] Enterprise features (SSO, RBAC)
+- [ ] Advanced integrations
+
+**See [PRODUCT_ROADMAP.md](PRODUCT_ROADMAP.md) for detailed roadmap and timelines**
+
 ## 🤝 Contributing
 
-This is a reference implementation. Feel free to:
-- Add new services
-- Implement additional features
-- Improve instrumentation
-- Add more backends
+WatchingCat is open source and welcomes contributions!
+
+### How to Contribute
+1. **Try it out** - Use WatchingCat and provide feedback
+2. **Report bugs** - Create issues for any problems
+3. **Suggest features** - Share your ideas in Discussions
+4. **Contribute code** - Submit pull requests
+5. **Improve docs** - Help others learn
+
+### Development Workflow
+```bash
+# Fork and clone
+git clone https://github.com/yourusername/WatchingCat
+cd WatchingCat
+
+# Create feature branch
+git checkout -b feature/amazing-feature
+
+# Make changes and test
+make build && make test
+
+# Submit PR
+git push origin feature/amazing-feature
+```
+
+### Areas We Need Help
+- [ ] Real Jaeger API integration in frontend
+- [ ] Alert rule builder UI
+- [ ] Log viewer implementation
+- [ ] Performance optimization
+- [ ] Documentation improvements
+- [ ] Test coverage
+- [ ] Kubernetes manifests
+
+**See [BACKEND_IMPLEMENTATION_GUIDE.md](BACKEND_IMPLEMENTATION_GUIDE.md) for Phase 2 implementation details**
+
+## 🌟 Show Your Support
+
+If you find WatchingCat useful, please:
+- ⭐ Star this repository
+- 🐦 Share on social media
+- 📝 Write a blog post
+- 🎥 Create a tutorial
+- 💬 Join our community
 
 ## 📝 License
 
-MIT License - Use freely in your projects!
+**Apache 2.0 License** - Use freely in your projects!
+
+This project is inspired by and follows the principles of:
+- [OpenTelemetry](https://opentelemetry.io) (Apache 2.0)
+- [SigNoz](https://signoz.io) (MIT/Apache 2.0)
+- [Jaeger](https://www.jaegertracing.io) (Apache 2.0)
 
 ## 🎉 What's Next?
 
-1. **Explore the traces** - See how requests flow through services
-2. **Create dashboards** - Build custom Grafana dashboards
-3. **Add your service** - Integrate your own microservice
-4. **Customize alerts** - Set up meaningful alerts
-5. **Deploy to production** - Use as a template for your system
+### For Users
+1. 🔍 **Explore the traces** - Click through the inline trace viewer
+2. 📊 **Create dashboards** - Build custom Grafana dashboards
+3. 🎨 **Customize the UI** - Modify themes and layouts
+4. 🚨 **Set up alerts** - Configure meaningful alerts (Phase 2)
+5. 🚀 **Deploy to production** - Use as your observability platform
+
+### For Developers
+1. 📖 **Read the architecture** - Understand the system design
+2. 🔧 **Build the backend** - Help with Phase 2 implementation
+3. 🧪 **Add tests** - Improve test coverage
+4. 📝 **Write docs** - Help others understand
+5. 🌟 **Contribute** - Submit pull requests
+
+### For Organizations
+1. 🏢 **Self-host** - Deploy in your infrastructure
+2. 📈 **Scale** - Adapt for your workload
+3. 🔐 **Secure** - Add enterprise authentication
+4. 🎯 **Customize** - Tailor to your needs
+5. 💼 **Share feedback** - Help us improve
 
 ---
 
-**You now have a complete, production-ready OpenTelemetry observability platform!** 🚀
+<div align="center">
 
-For questions or issues, check the documentation or create an issue.
+## 🐱 **WatchingCat: Observability Made Easy**
 
-**Happy Observing!** 👀
+**Self-Hosted • OpenTelemetry-Native • Production-Ready**
+
+[![GitHub](https://img.shields.io/badge/GitHub-WatchingCat-181717?logo=github)](.)
+[![Documentation](https://img.shields.io/badge/Docs-Complete-success)](WATCHINGCAT_ARCHITECTURE.md)
+[![Roadmap](https://img.shields.io/badge/Roadmap-View-blue)](PRODUCT_ROADMAP.md)
+
+**You now have a complete observability platform inspired by SigNoz!** 🚀
+
+For questions: Check [documentation](WATCHINGCAT_ARCHITECTURE.md) • Create [issues](../../issues) • Join [discussions](../../discussions)
+
+**Happy Observing!** 👀📊🔍
+
+---
+
+*Built with ❤️ by the observability community*  
+*Powered by OpenTelemetry • Inspired by SigNoz*
+
+</div>
 

@@ -438,7 +438,7 @@ function createTraceItem(trace) {
     `;
 
     item.addEventListener('click', () => {
-        window.open(`http://localhost:16686/trace/${trace.id}`, '_blank');
+        viewTraceDetails(trace);
     });
 
     return item;
@@ -451,6 +451,207 @@ function searchTraces() {
     showToast(`Searching traces${service ? ` for ${service}` : ''}...`, 'info');
     loadTracesPage();
 }
+
+function viewTraceDetails(trace) {
+    // Generate mock spans for the trace following OpenTelemetry structure
+    const spans = generateMockSpans(trace);
+
+    // Create trace viewer modal
+    const modal = document.createElement('div');
+    modal.className = 'trace-modal';
+    modal.id = 'trace-modal';
+
+    // Create backdrop
+    const backdrop = document.createElement('div');
+    backdrop.className = 'trace-modal-backdrop';
+    backdrop.onclick = closeTraceModal;
+
+    const content = document.createElement('div');
+    content.className = 'trace-modal-content';
+    content.onclick = (e) => e.stopPropagation(); // Prevent closing when clicking inside
+
+    content.innerHTML = `
+        <div class="trace-modal-header">
+            <div>
+                <h2><i class="fas fa-project-diagram"></i> Trace Details</h2>
+                <div class="trace-id-display">Trace ID: ${trace.id}</div>
+            </div>
+            <button class="btn-close" onclick="closeTraceModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="trace-summary">
+            <div class="trace-summary-item">
+                <span class="label">Duration:</span>
+                <span class="value">${trace.duration}ms</span>
+            </div>
+            <div class="trace-summary-item">
+                <span class="label">Services:</span>
+                <span class="value">${trace.services.length}</span>
+            </div>
+            <div class="trace-summary-item">
+                <span class="label">Spans:</span>
+                <span class="value">${spans.length}</span>
+            </div>
+            <div class="trace-summary-item">
+                <span class="label">Started:</span>
+                <span class="value">${trace.timestamp.toLocaleTimeString()}</span>
+            </div>
+        </div>
+        
+        <div class="trace-timeline">
+            <h3><i class="fas fa-stream"></i> Span Timeline</h3>
+            <div class="spans-container">
+                ${spans.map(span => createSpanView(span, trace.duration)).join('')}
+            </div>
+        </div>
+        
+        <div class="trace-actions">
+            <button class="btn btn-outline" onclick="window.open('http://localhost:16686/trace/${trace.id}', '_blank')">
+                <i class="fas fa-external-link-alt"></i> View in Jaeger
+            </button>
+            <button class="btn btn-primary" onclick="closeTraceModal()">
+                Close
+            </button>
+        </div>
+    `;
+
+    modal.appendChild(backdrop);
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+
+    // Prevent body scroll
+    document.body.style.overflow = 'hidden';
+
+    // Animate in
+    requestAnimationFrame(() => {
+        modal.classList.add('active');
+    });
+
+    // ESC key handler
+    const escHandler = (e) => {
+        if (e.key === 'Escape') {
+            closeTraceModal();
+        }
+    };
+    document.addEventListener('keydown', escHandler);
+    modal.escHandler = escHandler; // Store for cleanup
+}
+
+function generateMockSpans(trace) {
+    const spans = [];
+    let currentTime = 0;
+
+    // Root span - Frontend request
+    spans.push({
+        spanId: generateSpanId(),
+        operationName: 'HTTP GET /',
+        service: 'frontend',
+        startTime: currentTime,
+        duration: trace.duration,
+        tags: {
+            'http.method': 'GET',
+            'http.url': '/',
+            'http.status_code': 200
+        },
+        level: 0
+    });
+
+    // Child spans
+    const services = ['cartservice', 'productcatalog', 'checkoutservice'];
+    services.forEach((service, index) => {
+        const start = currentTime + (index * 30);
+        const duration = Math.floor(trace.duration * 0.3);
+
+        spans.push({
+            spanId: generateSpanId(),
+            operationName: `${service}.GetItems`,
+            service: service,
+            startTime: start,
+            duration: duration,
+            tags: {
+                'rpc.service': service,
+                'rpc.method': 'GetItems'
+            },
+            level: 1
+        });
+    });
+
+    return spans;
+}
+
+function generateSpanId() {
+    return Array.from({ length: 16 }, () =>
+        Math.floor(Math.random() * 16).toString(16)
+    ).join('');
+}
+
+function createSpanView(span, totalDuration) {
+    const startPercent = (span.startTime / totalDuration) * 100;
+    const widthPercent = Math.max((span.duration / totalDuration) * 100, 2); // Min 2% width for visibility
+    const indent = span.level * 30;
+
+    // Color based on service
+    const colors = {
+        'frontend': '#6366f1',
+        'cartservice': '#10b981',
+        'productcatalog': '#f59e0b',
+        'checkoutservice': '#ef4444'
+    };
+    const color = colors[span.service] || '#64748b';
+
+    // Show duration in bar if wide enough
+    const showDurationInBar = widthPercent > 15;
+
+    return `
+        <div class="span-row" style="margin-left: ${indent}px;">
+            <div class="span-info">
+                <div class="span-service" style="color: ${color};">
+                    <i class="fas fa-cube"></i> ${span.service}
+                </div>
+                <div class="span-operation">${span.operationName}</div>
+                <div class="span-duration">${span.duration}ms</div>
+            </div>
+            <div class="span-bar-container" title="${span.service}: ${span.operationName} (${span.duration}ms)">
+                <div class="span-bar" style="
+                    left: ${startPercent}%;
+                    width: ${widthPercent}%;
+                    background: ${color};
+                ">${showDurationInBar ? span.duration + 'ms' : ''}</div>
+            </div>
+            <div class="span-tags">
+                ${Object.entries(span.tags).map(([key, value]) =>
+        `<span class="span-tag"><strong>${key}:</strong> ${value}</span>`
+    ).join('')}
+            </div>
+        </div>
+    `;
+}
+
+function closeTraceModal() {
+    const modal = document.getElementById('trace-modal');
+    if (modal) {
+        // Remove ESC key handler
+        if (modal.escHandler) {
+            document.removeEventListener('keydown', modal.escHandler);
+        }
+
+        // Restore body scroll
+        document.body.style.overflow = '';
+
+        // Animate out
+        modal.classList.remove('active');
+        setTimeout(() => {
+            if (modal.parentNode) {
+                modal.remove();
+            }
+        }, 300);
+    }
+}
+
+// Make closeTraceModal globally accessible
+window.closeTraceModal = closeTraceModal;
 
 // ============================================
 // Metrics Page

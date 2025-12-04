@@ -162,62 +162,62 @@
             <div class="tools-section">
                 <h2><i class="fas fa-tools"></i> Observability Stack</h2>
                 <div class="tools-grid">
-                    <a href="{{.JaegerURL}}" target="_blank" class="tool-card jaeger">
+                    <div class="tool-card jaeger" onclick="navigateTo('traces')">
                         <div class="tool-icon">
                             <i class="fas fa-route"></i>
                         </div>
                         <div class="tool-content">
-                            <h3>Jaeger</h3>
-                            <p>Distributed tracing and request flow analysis</p>
+                            <h3>Distributed Traces</h3>
+                            <p>View and analyze request flows across services</p>
                             <div class="tool-stats">
                                 <span><i class="fas fa-project-diagram"></i> <span id="jaeger-traces">--</span>
                                     traces</span>
                             </div>
                         </div>
-                        <span class="tool-action">Open <i class="fas fa-external-link-alt"></i></span>
-                    </a>
+                        <span class="tool-action">View Traces <i class="fas fa-arrow-right"></i></span>
+                    </div>
 
-                    <a href="{{.GrafanaURL}}" target="_blank" class="tool-card grafana">
+                    <div class="tool-card grafana" onclick="navigateTo('metrics')">
                         <div class="tool-icon">
                             <i class="fas fa-chart-area"></i>
                         </div>
                         <div class="tool-content">
-                            <h3>Grafana</h3>
-                            <p>Metrics visualization and custom dashboards</p>
+                            <h3>System Metrics</h3>
+                            <p>CPU, memory, and performance monitoring</p>
                             <div class="tool-stats">
-                                <span><i class="fas fa-dashboard"></i> 3 dashboards</span>
+                                <span><i class="fas fa-chart-line"></i> Real-time charts</span>
                             </div>
                         </div>
-                        <span class="tool-action">Open <i class="fas fa-external-link-alt"></i></span>
-                    </a>
+                        <span class="tool-action">View Metrics <i class="fas fa-arrow-right"></i></span>
+                    </div>
 
-                    <a href="{{.PrometheusURL}}" target="_blank" class="tool-card prometheus">
+                    <div class="tool-card prometheus" onclick="window.open('{{.PrometheusURL}}', '_blank')">
                         <div class="tool-icon">
                             <i class="fas fa-fire"></i>
                         </div>
                         <div class="tool-content">
                             <h3>Prometheus</h3>
-                            <p>Time-series metrics collection and alerting</p>
+                            <p>Query metrics and create custom alerts</p>
                             <div class="tool-stats">
                                 <span><i class="fas fa-database"></i> <span id="prom-metrics">--</span> metrics</span>
                             </div>
                         </div>
-                        <span class="tool-action">Open <i class="fas fa-external-link-alt"></i></span>
-                    </a>
+                        <span class="tool-action">Query Metrics <i class="fas fa-external-link-alt"></i></span>
+                    </div>
 
-                    <a href="{{.KibanaURL}}" target="_blank" class="tool-card kibana">
+                    <div class="tool-card kibana" onclick="window.open('{{.KibanaURL}}', '_blank')">
                         <div class="tool-icon">
                             <i class="fas fa-search"></i>
                         </div>
                         <div class="tool-content">
-                            <h3>Kibana</h3>
-                            <p>Log search, analysis, and visualization</p>
+                            <h3>Logs & Events</h3>
+                            <p>Search and analyze application logs</p>
                             <div class="tool-stats">
                                 <span><i class="fas fa-file-alt"></i> <span id="kibana-logs">--</span> logs</span>
                             </div>
                         </div>
-                        <span class="tool-action">Open <i class="fas fa-external-link-alt"></i></span>
-                    </a>
+                        <span class="tool-action">Search Logs <i class="fas fa-external-link-alt"></i></span>
+                    </div>
                 </div>
             </div>
         </div>
