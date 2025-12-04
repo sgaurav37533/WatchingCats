@@ -1,0 +1,102 @@
+# OpenTelemetry Observability Configuration
+
+service:
+  name: "otel-observability-platform"
+  version: "1.0.0"
+  environment: "development"
+
+# Tracing Configuration
+tracing:
+  enabled: true
+  endpoint: "localhost:4317"
+  insecure: true
+  sampling_rate: 1.0  # 1.0 = 100% sampling
+  export_interval: 5s
+  max_export_batch_size: 512
+
+# Logging Configuration
+logging:
+  level: "info"  # debug, info, warn, error
+  format: "json"  # json, console
+  output: "stdout"
+  correlation_enabled: true
+  include_caller: true
+
+# Alerting Configuration
+alerts:
+  enabled: true
+  evaluation_interval: 30s
+  
+  rules:
+    - name: "high_error_rate"
+      description: "Alert when error rate exceeds 5%"
+      threshold: 0.05
+      metric: "error_rate"
+      severity: "critical"
+      
+    - name: "slow_response_time"
+      description: "Alert when p95 latency exceeds 1s"
+      threshold: 1000
+      metric: "response_time_p95"
+      severity: "warning"
+      
+    - name: "high_exception_count"
+      description: "Alert when exceptions exceed 10 per minute"
+      threshold: 10
+      metric: "exception_count"
+      window: "1m"
+      severity: "error"
+
+  # Notification channels
+  channels:
+    - type: "console"
+      enabled: true
+    - type: "webhook"
+      enabled: false
+      url: "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
+    - type: "email"
+      enabled: false
+      recipients:
+        - "oncall@example.com"
+
+# Exception Tracking Configuration
+exceptions:
+  enabled: true
+  capture_stack_trace: true
+  max_stack_depth: 50
+  group_by_message: true
+  ignore_patterns:
+    - "context canceled"
+    - "EOF"
+
+# Collector Configuration
+collector:
+  grpc:
+    endpoint: "0.0.0.0:4317"
+  http:
+    endpoint: "0.0.0.0:4318"
+  
+  # Backends to export data to
+  exporters:
+    jaeger:
+      enabled: false
+      endpoint: "localhost:14250"
+    
+    prometheus:
+      enabled: false
+      endpoint: "localhost:9090"
+    
+    elasticsearch:
+      enabled: false
+      endpoints:
+        - "http://localhost:9200"
+      index_prefix: "otel-logs"
+
+# Metrics Configuration
+metrics:
+  enabled: true
+  export_interval: 10s
+  histograms:
+    - name: "http_request_duration"
+      buckets: [0.01, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0]
+
