@@ -213,26 +213,39 @@ function loadServiceTopology() {
     // Clear container
     container.innerHTML = '';
 
-    // Create SVG
+    // Create SVG with responsive dimensions
     const width = container.clientWidth;
-    const height = 500;
+    const height = 480;
+    
+    // Calculate responsive positions (as percentages of width)
+    const col1 = width * 0.15;  // 15%
+    const col2 = width * 0.30;  // 30%
+    const col3 = width * 0.50;  // 50%
+    const col4 = width * 0.70;  // 70%
+    const col5 = width * 0.87;  // 87%
+    
+    const row1 = height * 0.25;  // Top row
+    const row2 = height * 0.50;  // Middle row
+    const row3 = height * 0.75;  // Bottom row
 
     const svg = d3.select('#service-topology')
         .append('svg')
         .attr('width', width)
-        .attr('height', height);
+        .attr('height', height)
+        .attr('viewBox', `0 0 ${width} ${height}`)
+        .attr('preserveAspectRatio', 'xMidYMid meet');
 
-    // Define nodes
+    // Define nodes with responsive positions
     const nodes = [
-        { id: 'load-gen', label: 'Load\nGenerator', x: 100, y: 250, type: 'client' },
-        { id: 'frontend', label: 'Frontend', x: 300, y: 250, type: 'service' },
-        { id: 'cart', label: 'Cart\nService', x: 500, y: 150, type: 'service' },
-        { id: 'catalog', label: 'Product\nCatalog', x: 500, y: 250, type: 'service' },
-        { id: 'checkout', label: 'Checkout\nService', x: 500, y: 350, type: 'service' },
-        { id: 'collector', label: 'OTEL\nCollector', x: 700, y: 250, type: 'backend' },
-        { id: 'jaeger', label: 'Jaeger', x: 900, y: 150, type: 'backend' },
-        { id: 'prometheus', label: 'Prometheus', x: 900, y: 250, type: 'backend' },
-        { id: 'elk', label: 'ELK Stack', x: 900, y: 350, type: 'backend' }
+        { id: 'load-gen', label: 'Load\nGenerator', x: col1, y: row2, type: 'client' },
+        { id: 'frontend', label: 'Frontend', x: col2, y: row2, type: 'service' },
+        { id: 'cart', label: 'Cart\nService', x: col3, y: row1, type: 'service' },
+        { id: 'catalog', label: 'Product\nCatalog', x: col3, y: row2, type: 'service' },
+        { id: 'checkout', label: 'Checkout\nService', x: col3, y: row3, type: 'service' },
+        { id: 'collector', label: 'OTEL\nCollector', x: col4, y: row2, type: 'backend' },
+        { id: 'jaeger', label: 'Jaeger', x: col5, y: row1, type: 'backend' },
+        { id: 'prometheus', label: 'Prometheus', x: col5, y: row2, type: 'backend' },
+        { id: 'elk', label: 'ELK Stack', x: col5, y: row3, type: 'backend' }
     ];
 
     // Define links
@@ -250,30 +263,35 @@ function loadServiceTopology() {
         { source: 'collector', target: 'elk' }
     ];
 
-    // Draw links
+    // Draw links with better styling
+    const linkGroup = svg.append('g').attr('class', 'links');
+    
     links.forEach(link => {
         const source = nodes.find(n => n.id === link.source);
         const target = nodes.find(n => n.id === link.target);
 
-        svg.append('line')
+        linkGroup.append('line')
             .attr('x1', source.x)
             .attr('y1', source.y)
             .attr('x2', target.x)
             .attr('y2', target.y)
             .attr('stroke', '#cbd5e1')
             .attr('stroke-width', 2)
-            .attr('opacity', 0.6);
-
-        // Add animated dot
-        svg.append('circle')
-            .attr('r', 4)
-            .attr('fill', '#6366f1')
-            .append('animateMotion')
-            .attr('dur', '3s')
-            .attr('repeatCount', 'indefinite')
-            .append('mpath')
-            .attr('href', '#path-' + link.source + '-' + link.target);
+            .attr('opacity', 0.5)
+            .attr('marker-end', 'url(#arrowhead)');
     });
+    
+    // Add arrowhead marker
+    svg.append('defs').append('marker')
+        .attr('id', 'arrowhead')
+        .attr('markerWidth', 10)
+        .attr('markerHeight', 10)
+        .attr('refX', 9)
+        .attr('refY', 3)
+        .attr('orient', 'auto')
+        .append('polygon')
+        .attr('points', '0 0, 10 3, 0 6')
+        .attr('fill', '#cbd5e1');
 
     // Draw nodes
     nodes.forEach(node => {
@@ -309,20 +327,21 @@ function loadServiceTopology() {
             .attr('stroke', strokeColor)
             .attr('stroke-width', 2);
 
-        // Node label
-        g.append('text')
-            .attr('text-anchor', 'middle')
-            .attr('dominant-baseline', 'middle')
-            .attr('font-size', '12px')
-            .attr('font-weight', '600')
-            .attr('fill', '#1e293b')
-            .selectAll('tspan')
-            .data(node.label.split('\n'))
-            .enter()
-            .append('tspan')
-            .attr('x', 0)
-            .attr('dy', (d, i) => i * 14 - 7)
-            .text(d => d);
+        // Node label with better line height
+        const lines = node.label.split('\n');
+        const lineHeight = 14;
+        const startY = -(lines.length - 1) * lineHeight / 2;
+        
+        lines.forEach((line, i) => {
+            g.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('x', 0)
+                .attr('y', startY + (i * lineHeight))
+                .attr('font-size', '11px')
+                .attr('font-weight', '600')
+                .attr('fill', '#1e293b')
+                .text(line);
+        });
 
         // Status indicator
         g.append('circle')
@@ -335,12 +354,20 @@ function loadServiceTopology() {
     });
 }
 
+function resetTopology() {
+    // Reload the topology visualization
+    loadServiceTopology();
+}
+
 async function updateToolsStats() {
     // Update tool statistics
     document.getElementById('jaeger-traces').textContent = '1,234';
     document.getElementById('prom-metrics').textContent = '542';
     document.getElementById('kibana-logs').textContent = '12.5K';
 }
+
+// Make resetTopology globally accessible
+window.resetTopology = resetTopology;
 
 // ============================================
 // Services Page
