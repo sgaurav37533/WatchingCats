@@ -1,0 +1,250 @@
+{{- if .Values.otelAgent.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.otelAgent.name }}-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.otelAgent.name }}
+data:
+  otel-agent-config.yaml: |
+    receivers:
+      {{- if .Values.otelAgent.traces.enabled }}
+      # OTLP Receiver
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+      
+      # Jaeger Receiver
+      jaeger:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:14250
+          thrift_http:
+            endpoint: 0.0.0.0:14268
+      
+      # Zipkin Receiver
+      zipkin:
+        endpoint: 0.0.0.0:9411
+      {{- end }}
+      
+      {{- if .Values.otelAgent.metrics.enabled }}
+      # Prometheus Receiver (for scraping)
+      prometheus:
+        config:
+          scrape_configs:
+            - job_name: 'otel-agent'
+              scrape_interval: 10s
+              static_configs:
+                - targets: ['localhost:8888']
+      
+      {{- if .Values.otelAgent.metrics.kubelet.enabled }}
+      # Kubelet Metrics
+      kubeletstats:
+        collection_interval: 20s
+        auth_type: "serviceAccount"
+        endpoint: {{ .Values.otelAgent.metrics.kubelet.endpoint | quote }}
+        insecure_skip_verify: true
+        metric_groups:
+          - node
+          - pod
+          - container
+      {{- end }}
+      
+      {{- if .Values.otelAgent.metrics.hostMetrics.enabled }}
+      # Host Metrics
+      hostmetrics:
+        collection_interval: 20s
+        scrapers:
+          cpu:
+          disk:
+          filesystem:
+          load:
+          memory:
+          network:
+          paging:
+          processes:
+      {{- end }}
+      {{- end }}
+      
+      {{- if .Values.otelAgent.logs.enabled }}
+      # File Log Receiver
+      filelog:
+        include:
+          {{- range .Values.otelAgent.logs.paths }}
+          - {{ . }}
+          {{- end }}
+        include_file_path: true
+        include_file_name: false
+        operators:
+          # Parse container logs
+          - type: router
+            id: get-format
+            routes:
+              - output: parser-docker
+                expr: 'body matches "^\\{"'
+              - output: parser-containerd
+                expr: 'body matches "^[^ Z]+ "'
+              - output: parser-crio
+                expr: 'body matches "^[^ ]+ [^ Z]+ "'
+          # Parse Docker format
+          - type: json_parser
+            id: parser-docker
+            output: extract_metadata_from_filepath
+            timestamp:
+              parse_from: attributes.time
+              layout: '%Y-%m-%dT%H:%M:%S.%LZ'
+          # Parse Containerd format
+          - type: regex_parser
+            id: parser-containerd
+            regex: '^(?P<time>[^ Z]+) (?P<stream>stdout|stderr) (?P<logtag>[^ ]*) ?(?P<log>.*)$'
+            output: extract_metadata_from_filepath
+            timestamp:
+              parse_from: attributes.time
+              layout: '%Y-%m-%dT%H:%M:%S.%LZ'
+          # Parse CRI-O format
+          - type: regex_parser
+            id: parser-crio
+            regex: '^(?P<time>[^ Z]+) (?P<stream>stdout|stderr) (?P<logtag>[^ ]*) (?P<log>.*)$'
+            output: extract_metadata_from_filepath
+            timestamp:
+              parse_from: attributes.time
+              layout: '%Y-%m-%dT%H:%M:%S.%LZ'
+          # Extract metadata from file path
+          - type: regex_parser
+            id: extract_metadata_from_filepath
+            regex: '^.*\/(?P<namespace>[^_]+)_(?P<pod_name>[^_]+)_(?P<uid>[a-f0-9\-]+)\/(?P<container_name>[^\._]+)\/(?P<restart_count>\d+)\.log$'
+            parse_from: attributes["log.file.path"]
+            cache:
+              size: 128
+          # Move parsed log to body
+          - type: move
+            from: attributes.log
+            to: body
+          # Rename attributes
+          - type: move
+            from: attributes.stream
+            to: attributes["log.iostream"]
+          - type: move
+            from: attributes.container_name
+            to: resource["k8s.container.name"]
+          - type: move
+            from: attributes.namespace
+            to: resource["k8s.namespace.name"]
+          - type: move
+            from: attributes.pod_name
+            to: resource["k8s.pod.name"]
+          - type: move
+            from: attributes.restart_count
+            to: resource["k8s.container.restart_count"]
+          - type: move
+            from: attributes.uid
+            to: resource["k8s.pod.uid"]
+      {{- end }}
+    
+    processors:
+      # Batch Processor
+      batch:
+        timeout: 10s
+        send_batch_size: 1024
+      
+      # Memory Limiter
+      memory_limiter:
+        check_interval: 5s
+        limit_mib: 409
+        spike_limit_mib: 128
+      
+      # Resource Detection
+      resourcedetection/system:
+        detectors: [system]
+        system:
+          hostname_sources: ['os']
+      
+      resourcedetection/env:
+        detectors: [env]
+        timeout: 2s
+        override: false
+      
+      # K8s Attributes Processor
+      k8sattributes:
+        auth_type: "serviceAccount"
+        passthrough: false
+        filter:
+          node_from_env_var: K8S_NODE_NAME
+        extract:
+          metadata:
+            - k8s.namespace.name
+            - k8s.deployment.name
+            - k8s.statefulset.name
+            - k8s.daemonset.name
+            - k8s.cronjob.name
+            - k8s.job.name
+            - k8s.node.name
+            - k8s.pod.name
+            - k8s.pod.uid
+            - k8s.pod.start_time
+        pod_association:
+          - sources:
+              - from: resource_attribute
+                name: k8s.pod.ip
+          - sources:
+              - from: resource_attribute
+                name: k8s.pod.uid
+          - sources:
+              - from: connection
+    
+    exporters:
+      # OTLP Exporter to Backend
+      otlp:
+        endpoint: {{ .Values.otelAgent.exporters.otlp.endpoint }}
+        tls:
+          insecure: {{ .Values.otelAgent.exporters.otlp.tls.insecure }}
+      
+      # Logging Exporter (for debugging)
+      logging:
+        verbosity: normal
+        sampling_initial: 5
+        sampling_thereafter: 200
+    
+    extensions:
+      # Health Check
+      health_check:
+        endpoint: 0.0.0.0:13133
+      
+      # pprof for profiling
+      pprof:
+        endpoint: 0.0.0.0:1777
+      
+      # zpages for debugging
+      zpages:
+        endpoint: 0.0.0.0:55679
+    
+    service:
+      extensions: [health_check, pprof, zpages]
+      pipelines:
+        {{- if .Values.otelAgent.traces.enabled }}
+        traces:
+          receivers: [otlp, jaeger, zipkin]
+          processors: [memory_limiter, k8sattributes, resourcedetection/system, resourcedetection/env, batch]
+          exporters: [otlp]
+        {{- end }}
+        {{- if .Values.otelAgent.metrics.enabled }}
+        metrics:
+          receivers: [prometheus{{- if .Values.otelAgent.metrics.kubelet.enabled }}, kubeletstats{{- end }}{{- if .Values.otelAgent.metrics.hostMetrics.enabled }}, hostmetrics{{- end }}]
+          processors: [memory_limiter, k8sattributes, resourcedetection/system, resourcedetection/env, batch]
+          exporters: [otlp]
+        {{- end }}
+        {{- if .Values.otelAgent.logs.enabled }}
+        logs:
+          receivers: [filelog]
+          processors: [memory_limiter, k8sattributes, resourcedetection/system, resourcedetection/env, batch]
+          exporters: [otlp]
+        {{- end }}
+      telemetry:
+        metrics:
+          address: 0.0.0.0:8888
+{{- end }}
+

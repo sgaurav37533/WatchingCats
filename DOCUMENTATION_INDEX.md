@@ -102,6 +102,39 @@ New to WatchingCat? Start with these documents in order:
     - Docker integration
     - **READ THIS to build the unified backend**
 
+### Kubernetes Deployment ⭐ NEW!
+
+11a. **[k8s/QUICKSTART.md](k8s/QUICKSTART.md)** ⭐⭐⭐ **NEW!**
+    - 5-minute K8s installation
+    - Quick start guide
+    - Common tasks
+    - Testing instructions
+    - **READ THIS to deploy to Kubernetes quickly**
+
+11b. **[k8s/README.md](k8s/README.md)** ⭐⭐⭐ **NEW!**
+    - Complete K8s documentation
+    - Architecture overview
+    - Configuration options
+    - Troubleshooting guide
+    - Security best practices
+    - **READ THIS for complete K8s guide**
+
+11c. **[K8S_COMPLETE_SUMMARY.md](K8S_COMPLETE_SUMMARY.md)** ⭐⭐ **NEW!**
+    - K8s integration overview
+    - Features and capabilities
+    - Installation methods
+    - Usage examples
+    - Collected metrics
+    - **READ THIS for K8s feature overview**
+
+11d. **[K8S_IMPLEMENTATION_COMPLETE.md](K8S_IMPLEMENTATION_COMPLETE.md)** ⭐ **NEW!**
+    - Complete implementation details
+    - All files created
+    - Architecture components
+    - Data flow
+    - Resource requirements
+    - **READ THIS for K8s technical details**
+
 ### Frontend/UI
 
 12. **[MODERN_UI_GUIDE.md](MODERN_UI_GUIDE.md)** ⭐⭐
@@ -304,6 +337,7 @@ New to WatchingCat? Start with these documents in order:
 
 ### Journey 4: Operator (Deploying)
 
+#### 4a: Docker Deployment
 ```
 1. README.md → Quick Start
 2. QUICKSTART.md → Basic Setup
@@ -313,7 +347,19 @@ New to WatchingCat? Start with these documents in order:
 ```
 
 **Time**: 3-4 hours  
-**Goal**: Deploy and operate WatchingCat
+**Goal**: Deploy and operate WatchingCat with Docker
+
+#### 4b: Kubernetes Deployment ⭐ NEW!
+```
+1. k8s/QUICKSTART.md → 5-minute K8s install
+2. k8s/README.md → Complete K8s guide
+3. K8S_COMPLETE_SUMMARY.md → Features & capabilities
+4. WATCHINGCAT_ARCHITECTURE.md → Understanding components
+5. K8S_IMPLEMENTATION_COMPLETE.md → Technical details
+```
+
+**Time**: 1-2 hours  
+**Goal**: Deploy and operate WatchingCat in Kubernetes
 
 ### Journey 5: Architect (Design Review)
 
@@ -354,7 +400,14 @@ New to WatchingCat? Start with these documents in order:
 - TRACE_VIEWER_FIXES.md
 - OTEL_PRINCIPLES_UPDATE.md
 
-### Phase 2 Documentation (Planned)
+### Phase 2 Documentation (In Progress)
+
+✅ **Recently Created** (December 5, 2025):
+- k8s/QUICKSTART.md (K8s quick start)
+- k8s/README.md (K8s complete guide)
+- K8S_COMPLETE_SUMMARY.md (K8s overview)
+- K8S_IMPLEMENTATION_COMPLETE.md (K8s technical)
+- Dockerfile.backend (Backend container)
 
 📅 **To Be Created**:
 - API_REFERENCE.md (OpenAPI/Swagger)
@@ -365,7 +418,7 @@ New to WatchingCat? Start with these documents in order:
 - SECURITY_GUIDE.md (Security)
 
 📅 **To Be Updated**:
-- README.md (new features)
+- README.md (new features) ✅ UPDATED with K8s
 - QUICK_REFERENCE.md (new commands)
 - WATCHINGCAT_ARCHITECTURE.md (backend details)
 
@@ -393,6 +446,12 @@ New to WatchingCat? Start with these documents in order:
 **"How do I contribute?"**
 → [BACKEND_IMPLEMENTATION_GUIDE.md](BACKEND_IMPLEMENTATION_GUIDE.md)
 
+**"How do I deploy to Kubernetes?"** ⭐ NEW!
+→ [k8s/QUICKSTART.md](k8s/QUICKSTART.md), [k8s/README.md](k8s/README.md)
+
+**"What K8s features are available?"** ⭐ NEW!
+→ [K8S_COMPLETE_SUMMARY.md](K8S_COMPLETE_SUMMARY.md)
+
 **"What changed today?"**
 → [PRODUCT_TRANSFORMATION_SUMMARY.md](PRODUCT_TRANSFORMATION_SUMMARY.md)
 
@@ -411,13 +470,14 @@ New to WatchingCat? Start with these documents in order:
 
 ### By the Numbers
 
-- **Total Documents**: 26 files
-- **Total Lines**: ~22,000 lines
+- **Total Documents**: 30+ files
+- **Total Lines**: ~25,000+ lines
 - **Product Docs**: 4 files
 - **Architecture Docs**: 3 files
-- **Implementation Guides**: 6 files
-- **Getting Started**: 4 files
+- **Implementation Guides**: 10 files (6 + 4 K8s)
+- **Getting Started**: 5 files (4 + 1 K8s quick start)
 - **Reference Docs**: 9 files
+- **Kubernetes Docs**: 4 files ⭐ NEW!
 
 ### Coverage
 
@@ -438,13 +498,19 @@ New to WatchingCat? Start with these documents in order:
 - Security hardening
 - Performance tuning
 
+✅ **Recently Completed**:
+- Kubernetes deployment ⭐ NEW!
+- K8s Helm chart documentation
+- OTel collector K8s configs
+- K8s installation scripts
+
 📅 **Planned** (Phase 3+):
 - Advanced features guide
 - ClickHouse migration
-- Kubernetes deployment
-- Cloud deployment
+- Cloud deployment (AWS, GCP, Azure)
 - Enterprise features
 - Incident management
+- K8s operator pattern
 
 ---
 
@@ -467,9 +533,31 @@ New to WatchingCat? Start with these documents in order:
 
 ---
 
-## 🆕 Recently Added (December 4, 2025)
+## 🆕 Recently Added
 
-✨ **New Documents Today**:
+### December 5, 2025 - Kubernetes Integration ⭐
+
+✨ **New K8s Documents**:
+1. k8s/QUICKSTART.md (5-minute K8s install guide)
+2. k8s/README.md (Complete K8s documentation)
+3. K8S_COMPLETE_SUMMARY.md (K8s features overview)
+4. K8S_IMPLEMENTATION_COMPLETE.md (K8s technical details)
+
+✨ **New K8s Implementation Files**:
+5. k8s/helm/k8s-infra/Chart.yaml (Helm chart)
+6. k8s/helm/k8s-infra/values.yaml (Configuration)
+7. k8s/helm/k8s-infra/templates/*.yaml (8 template files)
+8. k8s/scripts/install.sh (Installation script)
+9. k8s/scripts/uninstall.sh (Cleanup script)
+10. Dockerfile.backend (Backend container image)
+
+🔄 **Updated Documents**:
+1. README.md (Added K8s deployment option)
+2. DOCUMENTATION_INDEX.md (Added K8s section)
+
+### December 4, 2025 - Product Transformation
+
+✨ **New Documents**:
 1. WATCHINGCAT_PRODUCT_SUMMARY.md
 2. PRODUCT_ROADMAP.md
 3. BACKEND_IMPLEMENTATION_GUIDE.md
@@ -478,7 +566,7 @@ New to WatchingCat? Start with these documents in order:
 6. TRACE_VIEWER_FIXES.md
 7. DOCUMENTATION_INDEX.md (this file)
 
-🔄 **Updated Documents Today**:
+🔄 **Updated Documents**:
 1. README.md (product positioning)
 2. WATCHINGCAT_ARCHITECTURE.md (complete rewrite)
 
@@ -500,9 +588,12 @@ New to WatchingCat? Start with these documents in order:
 
 ## 📚 **Complete Documentation for WatchingCat**
 
-**26 documents • 22,000+ lines • Exceptional coverage**
+**30+ documents • 25,000+ lines • Exceptional coverage**
 
-Start your journey: [README.md](README.md) ⭐
+**New**: Kubernetes deployment! 🎉
+
+Start your journey: [README.md](README.md) ⭐  
+K8s quick start: [k8s/QUICKSTART.md](k8s/QUICKSTART.md) ⭐ NEW!
 
 Built with ❤️ by the WatchingCat team
 
@@ -510,7 +601,7 @@ Built with ❤️ by the WatchingCat team
 
 ---
 
-**Last Updated**: December 4, 2025  
-**Version**: 1.0  
-**Documents**: 26 files
+**Last Updated**: December 5, 2025  
+**Version**: 1.1  
+**Documents**: 30+ files (including K8s docs)
 

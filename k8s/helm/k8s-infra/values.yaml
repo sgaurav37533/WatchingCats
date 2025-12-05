@@ -1,0 +1,289 @@
+# WatchingCat K8s-Infra Helm Chart Values
+
+# Global settings
+global:
+  clusterName: "my-kubernetes-cluster"
+  region: "us-west-2"
+  environment: "production"
+
+# OpenTelemetry Collector - Agent (DaemonSet)
+otelAgent:
+  enabled: true
+  name: watchingcat-otel-agent
+  image:
+    repository: otel/opentelemetry-collector-k8s
+    tag: "0.91.0"
+    pullPolicy: IfNotPresent
+  
+  # Resources
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  
+  # What to collect
+  logs:
+    enabled: true
+    paths:
+      - /var/log/pods/*/*/*.log
+  
+  metrics:
+    enabled: true
+    kubelet:
+      enabled: true
+      endpoint: "https://${env:K8S_NODE_NAME}:10250"
+    hostMetrics:
+      enabled: true
+  
+  traces:
+    enabled: true
+    receivers:
+      - otlp
+      - jaeger
+      - zipkin
+  
+  # Export destination
+  exporters:
+    otlp:
+      endpoint: "watchingcat-backend.observability.svc.cluster.local:4317"
+      tls:
+        insecure: true
+  
+  # Service account
+  serviceAccount:
+    create: true
+    name: watchingcat-otel-agent
+
+# OpenTelemetry Collector - Deployment (Cluster-level)
+otelDeployment:
+  enabled: true
+  name: watchingcat-otel-deployment
+  replicas: 1
+  
+  image:
+    repository: otel/opentelemetry-collector-k8s
+    tag: "0.91.0"
+    pullPolicy: IfNotPresent
+  
+  # Resources
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+  
+  # What to collect
+  clusterMetrics:
+    enabled: true
+    kubeStateMetrics:
+      enabled: true
+  
+  kubernetesEvents:
+    enabled: true
+  
+  prometheusScaping:
+    enabled: true
+  
+  # Export destination
+  exporters:
+    otlp:
+      endpoint: "watchingcat-backend.observability.svc.cluster.local:4317"
+      tls:
+        insecure: true
+  
+  # Service account
+  serviceAccount:
+    create: true
+    name: watchingcat-otel-deployment
+
+# WatchingCat Backend
+backend:
+  enabled: true
+  name: watchingcat-backend
+  replicas: 2
+  
+  image:
+    repository: watchingcat/backend
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  
+  service:
+    type: ClusterIP
+    port: 8090
+    otlpGrpcPort: 4317
+    otlpHttpPort: 4318
+  
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+  
+  env:
+    - name: JAEGER_URL
+      value: "http://jaeger.observability.svc.cluster.local:16686"
+    - name: PROMETHEUS_URL
+      value: "http://prometheus.observability.svc.cluster.local:9090"
+    - name: ELASTICSEARCH_URL
+      value: "http://elasticsearch.observability.svc.cluster.local:9200"
+
+# WatchingCat Frontend
+frontend:
+  enabled: true
+  name: watchingcat-frontend
+  replicas: 2
+  
+  image:
+    repository: watchingcat/frontend
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  
+  service:
+    type: LoadBalancer
+    port: 3001
+  
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+# Storage Backends
+storage:
+  # Jaeger (Traces)
+  jaeger:
+    enabled: true
+    name: jaeger
+    image:
+      repository: jaegertracing/all-in-one
+      tag: "latest"
+    service:
+      type: ClusterIP
+      uiPort: 16686
+      collectorPort: 14268
+      queryPort: 16686
+    resources:
+      requests:
+        cpu: 500m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+    persistence:
+      enabled: false
+      size: 10Gi
+      storageClass: standard
+  
+  # Prometheus (Metrics)
+  prometheus:
+    enabled: true
+    name: prometheus
+    image:
+      repository: prom/prometheus
+      tag: "latest"
+    service:
+      type: ClusterIP
+      port: 9090
+    resources:
+      requests:
+        cpu: 500m
+        memory: 512Mi
+      limits:
+        cpu: 2000m
+        memory: 2Gi
+    retention: 15d
+    persistence:
+      enabled: true
+      size: 50Gi
+      storageClass: standard
+  
+  # Elasticsearch (Logs)
+  elasticsearch:
+    enabled: true
+    name: elasticsearch
+    replicas: 1
+    image:
+      repository: elasticsearch
+      tag: "8.12.0"
+    service:
+      type: ClusterIP
+      httpPort: 9200
+      transportPort: 9300
+    resources:
+      requests:
+        cpu: 1000m
+        memory: 2Gi
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+    persistence:
+      enabled: true
+      size: 100Gi
+      storageClass: standard
+
+# Grafana (Optional)
+grafana:
+  enabled: true
+  name: grafana
+  image:
+    repository: grafana/grafana
+    tag: "latest"
+  service:
+    type: LoadBalancer
+    port: 3000
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  persistence:
+    enabled: true
+    size: 10Gi
+    storageClass: standard
+
+# RBAC
+rbac:
+  create: true
+
+# Service Account
+serviceAccount:
+  create: true
+  annotations: {}
+
+# Pod Security
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 1000
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+  capabilities:
+    drop:
+      - ALL
+
+# Network Policy
+networkPolicy:
+  enabled: false
+
+# Node Selector
+nodeSelector: {}
+
+# Tolerations
+tolerations: []
+
+# Affinity
+affinity: {}
+

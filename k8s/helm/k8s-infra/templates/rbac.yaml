@@ -1,0 +1,148 @@
+{{- if .Values.rbac.create }}
+---
+# Service Account for otelAgent
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Values.otelAgent.serviceAccount.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.otelAgent.name }}
+
+---
+# ClusterRole for otelAgent
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ .Values.otelAgent.name }}
+  labels:
+    app: {{ .Values.otelAgent.name }}
+rules:
+  - apiGroups: [""]
+    resources:
+      - nodes
+      - nodes/proxy
+      - nodes/metrics
+      - services
+      - endpoints
+      - pods
+      - events
+      - namespaces
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources:
+      - deployments
+      - daemonsets
+      - replicasets
+      - statefulsets
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["batch"]
+    resources:
+      - jobs
+      - cronjobs
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources:
+      - nodes/stats
+    verbs: ["get"]
+  - nonResourceURLs:
+      - /metrics
+      - /metrics/cadvisor
+    verbs: ["get"]
+
+---
+# ClusterRoleBinding for otelAgent
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ .Values.otelAgent.name }}
+  labels:
+    app: {{ .Values.otelAgent.name }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ .Values.otelAgent.name }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Values.otelAgent.serviceAccount.name }}
+    namespace: {{ .Release.Namespace }}
+
+---
+# Service Account for otelDeployment
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Values.otelDeployment.serviceAccount.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.otelDeployment.name }}
+
+---
+# ClusterRole for otelDeployment
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ .Values.otelDeployment.name }}
+  labels:
+    app: {{ .Values.otelDeployment.name }}
+rules:
+  - apiGroups: [""]
+    resources:
+      - events
+      - namespaces
+      - namespaces/status
+      - nodes
+      - nodes/spec
+      - nodes/stats
+      - nodes/proxy
+      - pods
+      - pods/status
+      - replicationcontrollers
+      - replicationcontrollers/status
+      - resourcequotas
+      - services
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources:
+      - daemonsets
+      - deployments
+      - replicasets
+      - statefulsets
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["extensions"]
+    resources:
+      - daemonsets
+      - deployments
+      - replicasets
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["batch"]
+    resources:
+      - jobs
+      - cronjobs
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["autoscaling"]
+    resources:
+      - horizontalpodautoscalers
+    verbs: ["get", "list", "watch"]
+  - nonResourceURLs:
+      - /metrics
+    verbs: ["get"]
+
+---
+# ClusterRoleBinding for otelDeployment
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ .Values.otelDeployment.name }}
+  labels:
+    app: {{ .Values.otelDeployment.name }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ .Values.otelDeployment.name }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Values.otelDeployment.serviceAccount.name }}
+    namespace: {{ .Release.Namespace }}
+{{- end }}
+

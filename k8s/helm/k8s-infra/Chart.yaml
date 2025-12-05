@@ -1,0 +1,22 @@
+apiVersion: v2
+name: watchingcat-k8s-infra
+description: Complete Kubernetes observability with OpenTelemetry and WatchingCat
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - observability
+  - opentelemetry
+  - kubernetes
+  - monitoring
+  - tracing
+  - metrics
+  - logs
+home: https://github.com/yourusername/WatchingCat
+sources:
+  - https://github.com/yourusername/WatchingCat
+maintainers:
+  - name: WatchingCat Team
+    email: team@watchingcat.io
+icon: https://watchingcat.io/icon.png
+

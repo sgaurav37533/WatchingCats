@@ -1,7 +1,7 @@
 .PHONY: all build run test clean help
 
 # Variables
-SERVICES=frontend cartservice productcatalog checkoutservice loadgenerator webui
+SERVICES=frontend cartservice productcatalog checkoutservice loadgenerator webui backend
 GOCMD=go
 GOBUILD=CGO_ENABLED=0 $(GOCMD) build
 GOTEST=$(GOCMD) test
@@ -28,6 +28,14 @@ build:
 	@echo "Building collector..."; \
 	$(GOBUILD) -o bin/collector cmd/collector/main.go
 	@echo "✅ All services built successfully"
+
+## run-backend: Run the unified backend API server (NEW - PHASE 2)
+run-backend:
+	@echo "🚀 Starting WatchingCat Backend API..."
+	@echo "API: http://localhost:8090"
+	@echo "Health: http://localhost:8090/health"
+	@echo "API Docs: http://localhost:8090/api/v1"
+	$(GOCMD) run cmd/backend/main.go
 
 ## run-webui: Run the Web UI dashboard (PRIMARY INTERFACE)
 run-webui:
@@ -90,6 +98,7 @@ docker-logs:
 ## status: Check status of all services
 status:
 	@echo "Checking service status..."
+	@curl -s http://localhost:8090/health && echo "✅ Backend API: healthy" || echo "❌ Backend API: down"
 	@curl -s http://localhost:3001/health && echo "✅ Web UI: healthy" || echo "❌ Web UI: down"
 	@curl -s http://localhost:8080/health && echo "✅ Frontend: healthy" || echo "❌ Frontend: down"
 	@curl -s http://localhost:8081/health && echo "✅ Cart: healthy" || echo "❌ Cart: down"

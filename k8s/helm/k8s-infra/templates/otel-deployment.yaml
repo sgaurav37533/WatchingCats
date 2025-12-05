@@ -1,0 +1,65 @@
+{{- if .Values.otelDeployment.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.otelDeployment.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.otelDeployment.name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.otelDeployment.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.otelDeployment.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.otelDeployment.name }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8888"
+    spec:
+      serviceAccountName: {{ .Values.otelDeployment.serviceAccount.name }}
+      containers:
+      - name: otel-deployment
+        image: "{{ .Values.otelDeployment.image.repository }}:{{ .Values.otelDeployment.image.tag }}"
+        imagePullPolicy: {{ .Values.otelDeployment.image.pullPolicy }}
+        command:
+          - /otelcol-k8s
+          - --config=/conf/otel-deployment-config.yaml
+        env:
+        - name: K8S_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: K8S_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        ports:
+        - name: otlp-grpc
+          containerPort: 4317
+          protocol: TCP
+        - name: otlp-http
+          containerPort: 4318
+          protocol: TCP
+        - name: metrics
+          containerPort: 8888
+          protocol: TCP
+        resources:
+          {{- toYaml .Values.otelDeployment.resources | nindent 10 }}
+        volumeMounts:
+        - name: otel-deployment-config
+          mountPath: /conf
+      volumes:
+      - name: otel-deployment-config
+        configMap:
+          name: {{ .Values.otelDeployment.name }}-config
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
+

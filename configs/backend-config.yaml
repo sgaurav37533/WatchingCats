@@ -1,0 +1,57 @@
+server:
+  port: 8090
+  mode: debug  # debug, release, test
+
+jaeger:
+  url: http://localhost:16686
+  timeout: 10s
+
+prometheus:
+  url: http://localhost:9090
+  timeout: 10s
+
+elasticsearch:
+  url: http://localhost:9200
+  timeout: 10s
+  index: logs-*
+
+grafana:
+  url: http://localhost:3000
+
+kibana:
+  url: http://localhost:5601
+
+redis:
+  host: localhost
+  port: 6379
+  db: 0
+  password: ""
+
+auth:
+  enabled: false
+  jwt_secret: "change-this-secret-in-production"
+  token_duration: 24h
+
+alerts:
+  enabled: false
+  evaluation_interval: 30s
+  notification_channels: []
+
+cors:
+  allowed_origins:
+    - http://localhost:3001
+    - http://localhost:3000
+  allowed_methods:
+    - GET
+    - POST
+    - PUT
+    - DELETE
+    - OPTIONS
+  allowed_headers:
+    - Content-Type
+    - Authorization
+
+logging:
+  level: info  # debug, info, warn, error
+  format: json # json, console
+

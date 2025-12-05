@@ -103,9 +103,11 @@ Inspired by SigNoz's architecture, WatchingCat provides:
 ## 🚀 Quick Start
 
 ### Prerequisites
-- **Go 1.21+** (for local development)
-- **Docker & Docker Compose** (for full stack)
-- **8GB RAM** recommended for Docker
+- **Go 1.22+** (for local development)
+- **Docker & Docker Compose** (for full stack deployment)
+- **Kubernetes 1.19+** (optional - for K8s deployment)
+- **Helm 3.x** (optional - for K8s deployment)
+- **8GB RAM** recommended for Docker, **4GB RAM** for K8s
 
 ### 🌐 **NEW: Modern Web UI (Recommended)** ⭐️
 
@@ -185,6 +187,29 @@ docker-compose up -d jaeger prometheus grafana otel-collector
 # 2. Run services locally
 make run-all-local
 ```
+
+### Option 4: Kubernetes Deployment ⭐ NEW!
+
+**Full Kubernetes observability with OpenTelemetry**
+
+```bash
+# Quick install with Helm
+cd k8s
+./scripts/install.sh
+
+# Access UI
+kubectl port-forward -n observability svc/watchingcat-frontend 3001:3001
+open http://localhost:3001
+```
+
+**Features**:
+- 🎯 **OTel Agent** (DaemonSet) - Collects from every node
+- 🎯 **OTel Deployment** - Cluster-level metrics & events
+- 🎯 **Auto-discovery** - Automatically monitors all pods
+- 🎯 **RBAC** - Proper security with minimal permissions
+- 🎯 **Helm Chart** - Easy configuration and upgrades
+
+**See [k8s/QUICKSTART.md](k8s/QUICKSTART.md) for complete K8s guide!**
 
 ## 📊 Exploring the System
 
