@@ -176,13 +176,16 @@ open http://localhost:3001
 ## 📊 Screenshots
 
 ### Dashboard
-![Dashboard](docs/images/dashboard.png)
+<img width="2526" height="1250" alt="image" src="https://github.com/user-attachments/assets/6050a2b2-ce1b-4d6f-981a-fa2ba5b3a004" />
+
 
 ### Trace Viewer
-![Traces](docs/images/traces.png)
+<img width="2526" height="1250" alt="image" src="https://github.com/user-attachments/assets/ae076c3b-8cc1-4d11-8966-f0fe9e3b6a45" />
+
 
 ### Service Topology
-![Topology](docs/images/topology.png)
+<img width="1465" height="644" alt="image" src="https://github.com/user-attachments/assets/054c81bd-1bcf-4974-b1d7-6d7d3cc4b7bd" />
+
 
 ---
 
