@@ -176,7 +176,8 @@ open http://localhost:3001
 ## 📊 Screenshots
 
 ### Dashboard
-![Dashboard](docs/images/dashboard.png)
+<img width="2526" height="1250" alt="image" src="https://github.com/user-attachments/assets/6050a2b2-ce1b-4d6f-981a-fa2ba5b3a004" />
+
 
 ### Trace Viewer
 ![Traces](docs/images/traces.png)
